@@ -1,0 +1,27 @@
+{
+  "name": "react-native-fixed-fontsize",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yoonzm/react-native-fixed-fontsize.git"
+  },
+  "keywords": [
+    "react-native",
+    "fontsize",
+    "fixed",
+    "rn",
+    "textInput",
+    "size"
+  ],
+  "author": "yoonzm",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yoonzm/react-native-fixed-fontsize/issues"
+  },
+  "homepage": "https://github.com/yoonzm/react-native-fixed-fontsize#readme"
+}
