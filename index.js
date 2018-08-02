@@ -35,44 +35,49 @@ function fixedFontSize(target) {
 }
 
 Text.prototype.render = fixedFontSize(originTextRender)
-// TextInput.prototype.render = fixedFontSize(originTextInputRender)
-TextInput.prototype.render = function () {
-  const originComponent = originTextInputRender.apply(this, arguments);
-  try {
-    const originText = originComponent.props.children
-    let originStyle = originText.props.style
-    let newStyle = {
-      fontSize: defaultFontSize()
-    }
-    let textStyle = originStyle[0]
+if (Platform.OS === 'ios') {
+  TextInput.prototype.render = fixedFontSize(originTextInputRender)
+} else {
+  TextInput.prototype.render = function () {
+    const originComponent = originTextInputRender.apply(this, arguments);
+    try {
 
-    if (Number.isInteger(textStyle)) {
-      textStyle = ReactNativePropRegistry.getByID(textStyle)
-    }
-
-    if (Array.isArray(textStyle)) {
-      newStyle = textStyle.reduce((pre, curr) => {
-        let styleItem = curr || {}
-        if (Number.isInteger(styleItem)) {
-        styleItem = ReactNativePropRegistry.getByID(styleItem)
+      const originText = originComponent.props.children
+      let originStyle = originText.props.style
+      let newStyle = {
+        fontSize: defaultFontSize()
       }
-      return {...pre, ...styleItem}
-    }, newStyle)
-    } else {
-      newStyle = {...newStyle, ...(textStyle || {})}
-    }
-    newStyle.fontSize = newStyle.fontSize / fontSizeScale
+      let textStyle = originStyle[0]
 
-    return React.cloneElement(originComponent, {
-      children: {
-        ...originText,
-      props: {
-        ...originText.props,
-      style: newStyle
+      if (Number.isInteger(textStyle)) {
+        textStyle = ReactNativePropRegistry.getByID(textStyle)
+      }
+
+      if (Array.isArray(textStyle)) {
+        newStyle = textStyle.reduce((pre, curr) => {
+          let styleItem = curr || {}
+          if (Number.isInteger(styleItem)) {
+          styleItem = ReactNativePropRegistry.getByID(styleItem)
+        }
+        return {...pre, ...styleItem}
+      }, newStyle)
+      } else {
+        newStyle = {...newStyle, ...(textStyle || {})}
+      }
+      newStyle.fontSize = newStyle.fontSize / fontSizeScale
+
+      return React.cloneElement(originComponent, {
+        children: {
+          ...originText,
+        props: {
+          ...originText.props,
+        style: newStyle
+      }
     }
-  }
-  })
-  } catch (e) {
-    return originComponent
+    })
+    } catch (e) {
+      return originComponent
+    }
   }
 }
+
