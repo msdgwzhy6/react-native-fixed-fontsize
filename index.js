@@ -4,7 +4,6 @@
  * Date: 18-7-30
  * Time: 上午9:31
  * Desc: 固定字体大小　不随系统字体大小而变化
- *       FixedFontSize
  * @use import in root file (index.js)
  */
 import React from 'react'
@@ -36,6 +35,7 @@ function fixedFontSize(target) {
 }
 
 Text.prototype.render = fixedFontSize(originTextRender)
+// TextInput.prototype.render = fixedFontSize(originTextInputRender)
 TextInput.prototype.render = function () {
   const originComponent = originTextInputRender.apply(this, arguments);
   try {
@@ -51,7 +51,13 @@ TextInput.prototype.render = function () {
     }
 
     if (Array.isArray(textStyle)) {
-      newStyle = textStyle.reduce((pre, styleItem) => ({...pre, ...(styleItem || {})}), newStyle)
+      newStyle = textStyle.reduce((pre, curr) => {
+        let styleItem = curr || {}
+        if (Number.isInteger(styleItem)) {
+        styleItem = ReactNativePropRegistry.getByID(styleItem)
+      }
+      return {...pre, ...styleItem}
+    }, newStyle)
     } else {
       newStyle = {...newStyle, ...(textStyle || {})}
     }
@@ -60,12 +66,12 @@ TextInput.prototype.render = function () {
     return React.cloneElement(originComponent, {
       children: {
         ...originText,
-        props: {
-          ...originText.props,
-          style: newStyle
-        }
-      }
-    })
+      props: {
+        ...originText.props,
+      style: newStyle
+    }
+  }
+  })
   } catch (e) {
     return originComponent
   }
